@@ -1,0 +1,489 @@
+// @import "bootstrap-sass/lib/bootstrap";
+
+
+@function _radial-arg-parser($G1, $G2, $pos, $shape-size) {
+  @each $value in $G1, $G2 {
+    $first-val: nth($value, 1);
+    $pos-type:  type-of($first-val);
+    $spec-at-index: null;
+
+    // Determine if spec was passed to mixin
+    @if type-of($value) == list {
+      $spec-at-index: if(index($value, at), index($value, at), false);
+    }
+    @if $spec-at-index {
+      @if $spec-at-index > 1 {
+        @for $i from 1 through ($spec-at-index - 1) {
+          $shape-size: $shape-size nth($value, $i);
+        }
+        @for $i from ($spec-at-index + 1) through length($value) {
+          $pos: $pos nth($value, $i);
+        }
+      }
+      @else if $spec-at-index == 1 {
+        @for $i from ($spec-at-index + 1) through length($value) {
+          $pos: $pos nth($value, $i);
+        }
+      }
+      $G1: false;
+    }
+
+    // If not spec calculate correct values
+    @else {
+      @if ($pos-type != color) or ($first-val != "transparent") {
+        @if ($pos-type == number)
+        or ($first-val == "center")
+        or ($first-val == "top")
+        or ($first-val == "right")
+        or ($first-val == "bottom")
+        or ($first-val == "left") {
+
+          $pos: $value;
+
+          @if $pos == $G1 {
+            $G1: false;
+          }
+        }
+
+        @else if
+           ($first-val == "ellipse")
+        or ($first-val == "circle")
+        or ($first-val == "closest-side")
+        or ($first-val == "closest-corner")
+        or ($first-val == "farthest-side")
+        or ($first-val == "farthest-corner")
+        or ($first-val == "contain")
+        or ($first-val == "cover") {
+
+          $shape-size: $value;
+
+          @if $value == $G1 {
+            $G1: false;
+          }
+
+          @else if $value == $G2 {
+            $G2: false;
+          }
+        }
+      }
+    }
+  }
+  @return $G1, $G2, $pos, $shape-size;
+}
+
+// Requires Sass 3.1+
+@mixin radial-gradient($G1,        $G2,
+                       $G3: false, $G4: false,
+                       $G5: false, $G6: false,
+                       $G7: false, $G8: false,
+                       $G9: false, $G10: false,
+                       $pos: null,
+                       $shape-size: null,
+                       $deprecated-pos1: center center,
+                       $deprecated-pos2: center center,
+                       $deprecated-radius1: 0,
+                       $deprecated-radius2: 460,
+                       $fallback: false) {
+
+  $data: _radial-arg-parser($G1, $G2, $pos, $shape-size);
+  $G1:  nth($data, 1);
+  $G2:  nth($data, 2);
+  $pos: nth($data, 3);
+  $shape-size: nth($data, 4);
+
+  $full: compact($G1, $G2, $G3, $G4, $G5, $G6, $G7, $G8, $G9, $G10);
+
+  // Strip deprecated cover/contain for spec
+  $shape-size-spec: _shape-size-stripper($shape-size);
+
+  // Set $G1 as the default fallback color
+  $first-color: nth($full, 1);
+  $fallback-color: nth($first-color, 1);
+
+  @if (type-of($fallback) == color) or ($fallback == "transparent") {
+    $fallback-color: $fallback;
+  }
+
+  // Add Commas and spaces
+  $shape-size: if($shape-size, '#{$shape-size}, ', null);
+  $pos:        if($pos, '#{$pos}, ', null);
+  $pos-spec:   if($pos, 'at #{$pos}', null);
+  $shape-size-spec: if(($shape-size-spec != ' ') and ($pos == null), '#{$shape-size-spec}, ', '#{$shape-size-spec} ');
+
+  background-color:  $fallback-color;
+  background-image: _deprecated-webkit-gradient(radial, $deprecated-pos1, $deprecated-pos2, $full, $deprecated-radius1, $deprecated-radius2); // Safari <= 5.0 && IOS 4
+  background-image: -webkit-radial-gradient(unquote(#{$pos}#{$shape-size}#{$full}));
+  background-image: unquote("radial-gradient(#{$shape-size-spec}#{$pos-spec}#{$full})");
+}
+
+// Place all the styles related to the users controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.clearfix:before,
+.clearfix:after {
+  content: '\0020';
+  display: block;
+  overflow: hidden;
+  visibility: hidden;
+  width: 0;
+  height: 0;
+}
+
+.clearfix:after {
+  clear: both;
+}
+
+.clearfix {
+  zoom: 1;
+}
+
+@mixin shadow($dist) {
+  -webkit-box-shadow: $dist $dist 4px 0px #333; /* Android 2.3+, iOS 4.0.2-4.2, Safari 3-4 */
+  box-shadow: $dist $dist 4px 0px #333;
+}
+
+@mixin state($background, $icon) {
+    background: $background;
+    @include radial-gradient(circle at 50% 110%, darken($background, 9%) 30%, $background);
+    -webkit-box-shadow: inset 1px 1px 4px 0px #333;
+    box-shadow: inset 1px 1px 4px 0px #333;
+    text-align: center;
+    min-height: 25px;
+    min-width: 25px;
+    color: white;
+    position: absolute;
+    border: 4px solid lightgrey;
+    padding: 2px;
+    border-radius: 0 100% 100% 100%;
+    text-shadow: 0px 1px 0px rgba(255,255,255,0.5);
+    top: 0;
+    right: -15px;
+    font-family: 'storms';
+    speak: none;
+    color: $icon;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 25px;
+    -webkit-font-smoothing: antialiased;
+}
+
+
+.logo {
+    &:before {
+        position: relative;
+        top: 5px;
+        left: 5px;
+        color: rgba(255, 255, 255, 0.2);
+    }
+}
+
+.header {
+    width: 100%;
+    height: 50px;
+    background: rgba(0,0,0,0.8);
+    padding: 0;
+    margin: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    span {
+        color: #d6fb64;
+        font-family: 'Varela Round';
+        line-height: 50px;
+        font-size: 40px;
+        margin-left: 10px;
+        .for {
+            font-size: 20px;
+            font-family: 'Archivo Narrow';
+            color: #137097;
+            margin-left: -5px;
+        }
+    }
+    ul {
+        float: right;
+        margin-right: 10px;
+    }
+    li {
+        display: inline;
+        list-style: none;
+        font-family: 'Varela Round';
+        margin: 0 15px;
+        a {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.7);
+            &:hover {
+                color: rgba(255, 255, 255, 0.5);
+            }
+            &.dimmed {
+                color: rgba(255, 255, 255, 0.5);
+            }
+        }
+    }
+    .selected {
+      color: rgba(255,255,255,0.3);
+    }
+
+}
+
+//base list styles
+.users {
+    min-width: 1000px;
+}
+.users > li {
+    @include shadow(2px);
+    border-top: 1px solid rgba(255, 255, 255, 0.4);
+    border-left: 1px solid rgba(255, 255, 255, 0.4);
+}
+.users li {
+    float: left;
+    list-style-type: none;
+    padding: 20px;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.3);
+    margin-bottom: 20px;
+    margin-right: 20px;
+    width: 300px;
+    color: #0e3349;
+    font-family: 'Varela Round';
+    .tickets {
+        margin: 0;
+        padding: 0;
+        width: auto;
+    }
+    .tickets li {
+        list-style-type: none;
+        box-sizing: border-box;
+        padding: 15px;
+        padding-top: 30px;
+        float: none;
+        width: 100%;
+        background: lightgrey;
+        cursor: pointer;
+        //@include linear-gradient(0deg, white 0%, white 5%, grey 100%);
+        border-radius: 5px;
+        position: relative;
+        &.name {
+            @include shadow(0px);
+            font-family: 'Archivo Narrow';
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            background: rgba(255, 255, 255, 0.3);
+            text-align: center;
+            padding-top: 15px;
+        }
+        .ticket_body, .latest_info {
+            color: ghostwhite;
+            width: 111%;
+            margin-left: -5.5%;
+            // display: none;
+            overflow-x: scroll;
+            @include radial-gradient(circle at 50% 110%, darken(#137097, 15%) 30%, #0d2639);
+            border-top: 1px solid white;
+            border-bottom: 1px solid rgba(0,0,0,0.3);
+            box-sizing: border-box;
+            padding: 10px;
+            a {
+              text-decoration: none;
+              color: #d6fb64;
+              display: block;
+              text-align: right;
+            }
+        }
+        .info_heading a {
+            text-decoration: none;
+            padding: 0;
+            margin: 0;
+            color: white;
+            font-size: 14px;
+            position: relative;
+            left: -10px;
+            &:hover {
+                color: #d6fb64;
+            }
+        }
+        .info_heading {
+            text-align: center;
+            position: relative;
+            background: #2a1001;
+            width: 118%;
+            margin-left: -9%;
+            padding: 0 0 4px 0;
+            &:before {
+                color: #d6fb64;
+                position: relative;
+                top: 5px;
+                left: -10px;
+            }
+        }
+    }
+    .milestones {
+        font-size: 12px;
+        background: #0e3349;
+        text-align: center;
+        padding: 5px 0;
+        color: white;
+        border-radius: 20px 0 20px 20px;
+        width: 100%;
+
+    }
+    .number {
+        float: left;
+        //color: white;
+        color: #d6fb64;
+        //background: #d6fb64;
+        //background: #2a1001;
+        //border-radius: 100%;
+        //border: 3px solid lightgrey;
+        text-shadow: 1px 1px 3px #000;
+        padding: 5px;
+        min-width: 20px;
+        min-height: 20px;
+        text-align: center;
+        position: absolute;
+        left: 0px;
+        top: 0px;
+    }
+    .new:before {
+        @include state(ghostwhite, black);
+        content: attr(data-new-ticket);
+    }
+    .resolved, .sandboxverified{
+      opacity: 0.3;
+    }
+    .resolved:before {
+      @include state(#137097, black);
+      content: attr(data-resolved);
+    }
+    .resolved:hover, .sandboxverified:hover {
+        opacity: 1;
+    }
+    .readyfortest:before {
+      @include state(green, black);
+      content: attr(data-ready);
+    }
+    .open:before {
+      @include state(#137097, black);
+      content: attr(data-open);
+    }
+    .Low, .High, .Medium {
+      border-bottom: 3px solid #0e3349;
+    }
+    .invalid, .onproduction, .hold {
+        // display: none;
+    }
+}
+
+.iframe_container {
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    position: fixed;
+    top: 0;
+    left: 0;
+    iframe {
+        position: fixed;
+        top: 20%;
+        left: 50%;
+        margin-left: -350px;
+
+    }
+}
+
+
+
+.logo_heading {
+    margin-top: 30px;
+    color: #d6fb64;
+    position: relative;
+    font-family: 'Varela Round';
+    text-align: center;
+    font-size: 40px;
+    &:before {
+        color: rgba(255, 255, 255, 0.2);
+        position: absolute;
+        font-size: 100px;
+        left: 50%;
+        margin-left: -50px;
+    }
+}
+.subtitle {
+    color: #0d2639;
+    font-size: 24px;
+    font-family: 'Archivo Narrow';
+    text-align: center;
+    position: relative;
+    margin-top: -30px;
+    margin-bottom: 80px;
+}
+
+.projects {
+    width: 100%;
+    position: relative;
+//  left: 50%;
+//  margin-left: -100px;
+    box-sizing: border-box;
+    padding: 20px;
+    text-align: center;
+    background: rgba(0,0,0,0.2);
+    border-radius: 20px;
+    li {
+        display: inline-block;
+        text-align: center;
+        list-style-type: none;
+        width: 200px;
+        padding: 5px 15px;
+        font-family: 'Archivo Narrow';
+        margin: 0;
+
+        a {
+            border-radius: 3px;
+            border-top: 1px solid rgba(255,255,255, 0.4);
+            border-left: 1px solid rgba(255,255,255, 0.4);
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            width: 100%;
+            text-decoration: none;
+            color: white;
+            display: inline-block;
+            -webkit-box-shadow: 2px 2px 4px 0px #000000;
+            box-shadow: 2px 2px 4px 0px #000000;
+            &:hover {
+                background: rgba(255,255,255, 0.1);
+            }
+        }
+    }
+}
+
+@font-face {
+    font-family: 'storms';
+    src:font-url('storms.eot');
+    src:font-url('storms.eot?#iefix') format('embedded-opentype'),
+        font-url('storms.woff') format('woff'),
+        font-url('storms.ttf') format('truetype'),
+        font-url('storms.svg#storms') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+[data-icon]:before {
+    font-family: 'storms';
+    content: attr(data-icon);
+    speak: none;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+}
+
+ body {
+    background: black;
+    @include radial-gradient(circle at 50% 85%, #137097 30%, #0d2639);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    margin-top: 70px;
+}

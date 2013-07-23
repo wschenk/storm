@@ -1,0 +1,8 @@
+<h1 class="logo_heading" data-icon="&#xe017;">STORMS</h1>
+<p class="subtitle">pick your project</p>
+
+<ul class="projects">
+  <li ng-repeat="project in projects">
+    <a href="#/project/{{project.project.id}}">{{project.project.name}}</a>
+  </li>
+</ul>
