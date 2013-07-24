@@ -1,9 +1,29 @@
 'use strict';
 
 angular.module('stormApp')
-  .controller('MainCtrl', function ($scope,$http) {
+  .service('sharedProperties', function () {
+    var property;
+      return {
+        getProperty: function () {
+          return property;
+        },
+        setProperty: function(value) {
+          property = value;
+        }
+      };
+    })
+  .controller('MainCtrl', function ($scope,$http,sharedProperties) {
     console.log( 'Running get' );
-    $http.jsonp('http://happyfun.lighthouseapp.com/projects.json?callback=JSON_CALLBACK').success( function(data) {
+    $http.jsonp('http://' + sharedProperties.getProperty() + '.lighthouseapp.com/projects.json?callback=JSON_CALLBACK').success( function(data) {
       $scope.projects = data.projects;
     });
+  })
+  .controller('LoadCtrl', function ($scope,sharedProperties) {
+  	$scope.setProp = function() {
+      sharedProperties.setProperty($scope.account);
+      console.log(sharedProperties.getProperty());
+  	}
   });
+
+
+    
