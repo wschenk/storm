@@ -487,3 +487,41 @@
     background-attachment: fixed;
     margin-top: 70px;
 }
+
+.loadContainer {
+    position: relative;
+    top: 100px;
+    font-family: "Varela Round";
+    text-align: center;
+        h1, h3 {
+            color: #d6fb64;
+        }
+        h3 {
+            padding-top: 0;
+        }
+        input {
+            border-radius: 3px;
+            width: 200px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            border: none;
+            font-size: 20px;
+        }
+        a {
+            border-radius: 3px;
+            border-top: 1px solid rgba(255,255,255, 0.4);
+            border-left: 1px solid rgba(255,255,255, 0.4);
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            text-decoration: none;
+            color: white;
+            display: inline-block;
+            -webkit-box-shadow: 2px 2px 4px 0px #000000;
+            box-shadow: 2px 2px 4px 0px #000000;
+            &:hover {
+                background: rgba(255,255,255, 0.1);
+            }
+        }
+
+}
