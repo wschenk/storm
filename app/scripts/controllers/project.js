@@ -54,7 +54,7 @@ angular.module('stormApp').controller( 'UserCtrl', function( $scope, $http ) {
   console.log( 'User ctl' + $scope.user.name );
   $scope.loading = true;
   $scope.display = true;
-  $http.jsonp('http://happyfun.lighthouseapp.com/projects/' + $scope.project_id + '/tickets.json?q=\'' + $scope.user.name + '\'&callback=JSON_CALLBACK').success( function(data) {
+   $http.jsonp('http://happyfun.lighthouseapp.com/projects/' + $scope.project_id + '/tickets.json?q=responsible%3A%27' + $scope.user.name + '%27&callback=JSON_CALLBACK').success( function(data) {
     console.log( 'Got tickets for ' + $scope.user.name );
     $scope.loading = false;
     if( data.tickets ) {
@@ -67,5 +67,5 @@ angular.module('stormApp').controller( 'UserCtrl', function( $scope, $http ) {
 });
 
 setInterval( function() {
-  $(".users").width( $(".users > li:first").outerWidth() * ($(".users > li").size() - $(".users > li[style]").size() + 1) );
+  $(".users").width( $(".users > li:first").outerWidth() * ($(".users > li").size() - $(".users > li[style='display: none;']").size() + 1) );
 }, 1000 );
