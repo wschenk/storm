@@ -4,10 +4,6 @@ angular.module('stormApp', ['ngResource'])
   .config(function ($routeProvider) {
     $routeProvider
       .when('/', {
-        templateUrl: 'views/load.html',
-        controller: 'LoadCtrl'
-      })
-      .when('/main', {
         templateUrl: 'views/main.html',
         controller: 'MainCtrl'
       })

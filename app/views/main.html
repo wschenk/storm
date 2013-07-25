@@ -1,8 +1,10 @@
 <h1 class="logo_heading" data-icon="&#xe017;">STORMS</h1>
-<p class="subtitle">pick your project</p>
 
-<ul class="projects">
-  <li ng-repeat="project in projects">
-    <a href="#/project/{{project.project.id}}">{{project.project.name}}</a>
-  </li>
-</ul>
+<div class="loadContainer">
+  <h3>First login to Lighthouse. Then, enter your account name below.</h3>
+  <p>Your account name is located right above the project title in Lighthouse: </p>
+  <input ng-model="account" ng-change="setProp()">
+  <h1>{{$scope.possibleAccount}}</h1>
+  <p>{{account}}</p>
+  <a href='#/projects'>continue</a>
+</div>
