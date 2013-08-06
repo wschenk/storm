@@ -120,6 +120,29 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
+@font-face {
+    font-family: 'storms';
+    src:font-url('storms-icons.eot');
+    src:font-url('storms-icons.eot?#iefix') format('embedded-opentype'),
+        font-url('storms-icons.woff') format('woff'),
+        font-url('storms-icons.ttf') format('truetype'),
+        font-url('storms-icons.svg#storms') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+[data-icon]:before {
+    font-family: 'storms';
+    content: attr(data-icon);
+    speak: none;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+}
+
 .clearfix:before,
 .clearfix:after {
   content: '\0020';
@@ -275,7 +298,7 @@
             text-align: center;
             padding-top: 15px;
         }
-        .ticket_body, .latest_info {
+        .ticket_body, .latest_info, .last_comment {
             color: ghostwhite;
             width: 111%;
             margin-left: -5.5%;
@@ -349,25 +372,25 @@
     }
     .new:before {
         @include state(ghostwhite, black);
-        content: attr(data-new-ticket);
+        content: "l";
     }
     .resolved, .sandboxverified{
       opacity: 0.3;
     }
     .resolved:before {
       @include state(#137097, black);
-      content: attr(data-resolved);
+      content: "c";
     }
     .resolved:hover, .sandboxverified:hover {
         opacity: 1;
     }
     .readyfortest:before {
       @include state(green, black);
-      content: attr(data-ready);
+      content: "w";
     }
     .open:before {
       @include state(#137097, black);
-      content: attr(data-open);
+      content: "e";
     }
     .Low, .High, .Medium {
       border-bottom: 3px solid #0e3349;

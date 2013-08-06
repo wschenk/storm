@@ -1,5 +1,5 @@
 <div class="header">
-  <span class="logo" data-icon="&#xe017;">STORMS
+  <span class="logo" data-icon="l">STORMS
     <span class="for">for {{project.name}}</span>
   </span>
 
@@ -14,16 +14,18 @@
     <h1 ng-show="loading">Loading tickets</h1>
     <ul class="tickets">
       <li class="name" ng-click="display = !display">{{user.name}}</li>
-      <li ng-repeat="ticket in tickets" class="{{ticket.ticket.state}} {{ticket.ticket.importance_name}}" ng-hide="hide[ticket.ticket.state]">
-        <div ng-click="expand = !expand">
+      <li ng-repeat="ticket in tickets" data-name="{{ticket.ticket.assigned_user_name}}" ng-controller="TicketCtrl" class="{{ticket.ticket.state}} {{ticket.ticket.importance_name}} ticket_base" ng-hide="hide[ticket.ticket.state]">
+        <div ng-click="grab_comment_and_expand(ticket.ticket.url, $event)">
           <span class="number">#{{ticket.ticket.number}}</span>
           {{ticket.ticket.title}}
-
           <p class="milestones" ng-show="ticket.ticket.milestone_title">{{ticket.ticket.milestone_title}}</p>
         </div>
-        <p class="ticket_body" ng-show="expand">
+        <p class="ticket_body" ng-show="expand" data-number={{ticket.ticket.number}}>
           {{ticket.ticket.latest_body}}
-          <a ng-click="showLightbox(ticket.ticket.url);">view on lighthouse...</a>
+          <a ng-click="showLightbox(ticket.ticket.url, $event);">view on lighthouse...</a>
+        </p>
+        <h3 ng-show="expand">Last Comment</h3>
+        <p class="last_comment" ng-show="expand"> 
         </p>
       </li>
     </ul>
